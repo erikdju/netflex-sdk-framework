@@ -49,7 +49,9 @@ class Image extends Component
     $class = null,
     $style = null,
     $preset = null,
-    $cdn = null
+    $cdn = null,
+    $widthAttribute = null,
+    $heightAttribute = null
   ) {
     $explicitWidth = $width !== null;
     $explicitHeight = $height !== null;
@@ -82,6 +84,8 @@ class Image extends Component
       'size' => $size ?? (($width && $height) ? "{$width}x{$height}" : null),
       'explicitWidth' => $explicitWidth,
       'explicitHeight' => $explicitHeight,
+      'widthAttribute' => $widthAttribute,
+      'heightAttribute' => $heightAttribute,
       'mode' => $mode,
       'color' => $color,
       'direction' => $direction,
@@ -121,8 +125,12 @@ class Image extends Component
     }
   }
 
-  public function width()
+  public function width(): ?int
   {
+    if ($this->settings->widthAttribute) {
+      return (int) $this->settings->widthAttribute;
+    }
+
     if ($this->settings->explicitWidth) {
       @list($width) = explode('x', $this->size());
       if ($width ?? null) {
@@ -133,8 +141,12 @@ class Image extends Component
     return null;
   }
 
-  public function height()
+  public function height(): ?int
   {
+    if ($this->settings->heightAttribute) {
+      return (int) $this->settings->heightAttribute;
+    }
+
     if ($this->settings->explicitHeight) {
       @list($_, $height) = explode('x', $this->size());
       if ($height ?? null) {
